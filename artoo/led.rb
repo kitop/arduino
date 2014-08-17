@@ -1,16 +1,16 @@
 require 'artoo'
-require 'artoo-arduino'
 
-connection :arduino, adaptor: :firmata, port: '/dev/tty.usbserial-A600ezfM'
-device :led0, driver: :led, pin: 10
-device :led1, driver: :led, pin: 11
-device :led2, driver: :led, pin: 12
+# Circuit and schematic here: http://arduino.cc/en/Tutorial/Blink
+
+connection :firmata, :adaptor => :firmata, :port => '/dev/cu.usbserial-A600ezfM'
+device :board, :driver => :device_info
+device :led, :driver => :led, :pin => 13
 
 work do
-  [:on, :off].each do |state|
-    [led0, led1, led2].each do |led|
-      led.send(state)
-      sleep 0.5
-    end
+  puts "Firmware name: #{board.firmware_name}"
+  puts "Firmata version: #{board.version}"
+
+  every 1.second do
+    led.on? ? led.off : led.on
   end
 end
